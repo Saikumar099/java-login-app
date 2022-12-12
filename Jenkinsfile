@@ -118,7 +118,7 @@ pipeline {
                     kubectl apply -f mavenwebappdeployment.yaml -n sample-ns
                     '''
                 }
-            } *
+            } */
          }
        
-       }
+}
