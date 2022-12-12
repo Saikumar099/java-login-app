@@ -8,9 +8,9 @@ pipeline {
               def DOCKERHUB_CREDENTIALS=credentials('docker-hub') 
               AWS_ACCOUNT_ID="948406862378"
               AWS_DEFAULT_REGION="us-west-1"
-              IMAGE_REPO_NAME="project2"
+              IMAGE_REPO_NAME="java-app-login"
               IMAGE_TAG="latest"
-              REPOSITORY_URI = "948406862378.dkr.ecr.us-west-1.amazonaws.com/project2"
+              REPOSITORY_URI = "948406862378.dkr.ecr.us-west-1.amazonaws.com/java-app-login"
         } 
        stages{
            stage('checkout code') {
@@ -18,7 +18,7 @@ pipeline {
                     label 'master'
                }
                steps{
-               checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'Guthub', url: 'https://github.com/Saikumar099/project2.git']]])  
+               checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'Guthub', url: 'https://github.com/Saikumar099/java-app-login.git']]])  
                stash 'source'
                }
            }
@@ -47,7 +47,7 @@ pipeline {
                         //-Dsonar.projectKey=project-demo 
                         //-Dsonar.projectName=project-demo 
                         //-Dsonar.java.binaries=target/classes'''
-                       sh 'mvn clean install sonar:sonar -Dsonar.host.url=http://54.193.191.66:9000 -Dproject.settings=sonar-project.properties -Dsonar.projectKey=project2 -Dsonar.projectName=project2 || true'
+                       sh 'mvn clean install sonar:sonar -Dsonar.host.url=http://54.193.100.214:9000/ -Dproject.settings=sonar-project.properties -Dsonar.projectKey=java-app-login -Dsonar.projectName=java-app-login || true'
                     }
                 }
            }
@@ -56,16 +56,16 @@ pipeline {
                     label 'Docker Server'
                 }
               steps{
-                 nexusArtifactUploader artifacts: [[artifactId: 'maven-web-application', 
+                 nexusArtifactUploader artifacts: [[artifactId: 'dptweb', 
                                        classifier: '', 
-                                       file: 'target/maven-web-application.war', 
+                                       file: 'target/dptweb.war', 
                                        type: 'war']], 
                                        credentialsId: 'nexus', 
-                                       groupId: 'com.mt', 
-                                       nexusUrl: '54.193.191.66:8081/', 
+                                       groupId: 'com.devopsrealtime', 
+                                       nexusUrl: '54.193.100.214:8081/', 
                                        nexusVersion: 'nexus3', 
                                        protocol: 'http', 
-                                       repository: 'project2', 
+                                       repository: 'java-app-login', 
                                       version: '1.0'
                } 
            }
@@ -75,7 +75,7 @@ pipeline {
               }
                steps{
                      //sh 'docker build -t saikumar099/java-web-app:$BUILD_NUMBER .'   //for dockerhub
-		             sh 'docker build -t project2 .'   
+		             sh 'docker build -t java-app-login .'   
               }
            }
          stage('pushing image to ECR') {
@@ -108,7 +108,7 @@ pipeline {
                      //}  
                   }
              } */
-            stage('deploying image to k8s') {
+            /*stage('deploying image to k8s') {
                 agent {
                     label 'Docker Server'
                 }
@@ -118,7 +118,7 @@ pipeline {
                     kubectl apply -f mavenwebappdeployment.yaml -n sample-ns
                     '''
                 }
-            }
+            } *
          }
        
        }
