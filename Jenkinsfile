@@ -18,7 +18,7 @@ pipeline {
                     label 'master'
                }
                steps{
-               checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'Guthub', url: 'https://github.com/Saikumar099/java-app-login.git']]])  
+               checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'Guthub', url: 'https://github.com/Saikumar099/java-login-app.git']]])  
                stash 'source'
                }
            }
